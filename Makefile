@@ -1,10 +1,10 @@
 HOME=$(shell pwd)
-MAINVERSION?=2.4
+MAINVERSION?=3.0
 NO_SUDO?=0
 USE_PODMAN?=0
-LUA_VERSION?=5.4.3
-USE_LUA?=0
-USE_PROMETHEUS?=0
+LUA_VERSION=5.3.5
+USE_LUA?=1
+USE_PROMETHEUS?=1
 CPU?=0
 VERSION=$(shell curl -s http://git.haproxy.org/git/haproxy-${MAINVERSION}.git/refs/tags/ | sed -n 's:.*>\(.*\)</a>.*:\1:p' | sed 's/^.//' | sort -rV | head -1)
 ifeq ("${VERSION}","./")
@@ -75,11 +75,8 @@ build-docker:
 run-docker: build-docker
 	mkdir -p RPMS
 	chcon -Rt svirt_sandbox_file_t RPMS || true
-	$(CONTAINER_RUNTIME) run --volume $(HOME)/RPMS:/RPMS --rm -e USE_PROMETHEUS=${USE_PROMETHEUS} -e RELEASE=${RELEASE} haproxy-rpm-builder7:${VERSION}-${RELEASE}
 	$(CONTAINER_RUNTIME) run --volume $(HOME)/RPMS:/RPMS --rm -e USE_PROMETHEUS=${USE_PROMETHEUS} -e RELEASE=${RELEASE} haproxy-rpm-builder8:${VERSION}-${RELEASE}
 	$(CONTAINER_RUNTIME) run --volume $(HOME)/RPMS:/RPMS --rm -e USE_PROMETHEUS=${USE_PROMETHEUS} -e RELEASE=${RELEASE} haproxy-rpm-builder9:${VERSION}-${RELEASE}
-	$(CONTAINER_RUNTIME) run --volume $(HOME)/RPMS:/RPMS --rm -e USE_PROMETHEUS=${USE_PROMETHEUS} -e RELEASE=${RELEASE} haproxy-rpm-builder-amzn2:${VERSION}-${RELEASE}
-	$(CONTAINER_RUNTIME) run --volume $(HOME)/RPMS:/RPMS --rm -e USE_PROMETHEUS=${USE_PROMETHEUS} -e RELEASE=${RELEASE} haproxy-rpm-builder-amzn2023:${VERSION}-${RELEASE}
 
 build: $(build_stages)
 	cp -r ./SPECS/* ./rpmbuild/SPECS/ || true
