@@ -3,3 +3,4 @@ rpmbuild
 RPMS
 lua-*
 .docker
+.idea
