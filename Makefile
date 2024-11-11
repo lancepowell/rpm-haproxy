@@ -54,7 +54,7 @@ build_lua:
 	rpm -q readline-devel || $(SUDO) yum install -y readline-devel
 	curl -o ./SOURCES/lua-${LUA_VERSION}.tar.gz https://www.lua.org/ftp/lua-${LUA_VERSION}.tar.gz
 	cd ./SOURCES
-	tar xzf lua-${LUA_VERSION}.tar.gz
+	tar xzf /SOURCES/lua-${LUA_VERSION}.tar.gz
 	cd lua-${LUA_VERSION}
 	$(MAKE) -C lua-${LUA_VERSION} clean
 	$(SUDO) $(MAKE) -C lua-${LUA_VERSION} MYCFLAGS=-fPIC linux test  # MYCFLAGS=-fPIC is required during linux ld
@@ -66,11 +66,8 @@ ifeq ($(USE_LUA),1)
 endif
 
 build-docker:
-	$(CONTAINER_RUNTIME) build -t haproxy-rpm-builder7:${VERSION}-${RELEASE} -f Dockerfile7 .
 	$(CONTAINER_RUNTIME) build -t haproxy-rpm-builder8:${VERSION}-${RELEASE} -f Dockerfile8 .
 	$(CONTAINER_RUNTIME) build -t haproxy-rpm-builder9:${VERSION}-${RELEASE} -f Dockerfile9 .
-	$(CONTAINER_RUNTIME) build -t haproxy-rpm-builder-amzn2:${VERSION}-${RELEASE} -f Dockerfile-amzn2 .
-	$(CONTAINER_RUNTIME) build -t haproxy-rpm-builder-amzn2023:${VERSION}-${RELEASE} -f Dockerfile-amzn2023 .
 
 run-docker: build-docker
 	mkdir -p RPMS
